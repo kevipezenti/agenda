@@ -2,48 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\http\Request;
-use App\Models\Agenda;
+use App\Services\AgendaServices;
 
 class AgendaController extends Controller
 {
     
-    private $obj_banco;
+    private $ObjServices;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(Agenda $agenda){
+    public function __construct(AgendaServices $service){
         
-        $this->obj_banco = $agenda;
+        $this->ObjServices = $service;
     }
 
     public function Agendar(Request $request){
-        $agendados = $this->obj_banco->query();
 
-        $agenda = $agendados->where([
-            'data_inicio','=',$request->json('data_inicio'),
-            'AND',
-            'id_sala','=',$request->json('id_sala')
-        ])->get();
-        // return $request->json('data_inicio');
-        return dd($agenda);
-        // $agenda = $this->obj_banco->create($request->all());
+        if($this->ObjServices->BuscarAgendas($request)){
+            return response()->json([
+                "status"=>"false",
+                "response"=>"Sala agendada para data e horario definido."
+                ]);
+        }
+        
+        return $this->ObjServices->SalvarAgendamento($request);
 
-        // return response()->json($agenda);
-        // return $request->all(['data_inicio','id_sala']);
     }
 
-    public function Cancelar(){
-        return "Cancelar";
+    public function Cancelar(Request $request){
+
+        if($this->ObjServices->BuscarAgendaCancelar($request)){
+            return response()->json([
+                "status"=>"false",
+                "response"=>"Nao foi encontrado agenda para excluir."
+                ]);
+        }
+
+        return $this->ObjServices->CancelarAgendamentos($request);
+
     }
 
     public function Listar($data){
-    
-        $agendas = $this->obj_banco->find($data);
+        
+        return $this->ObjServices->ListarAgendamentos($data);
 
-        return response()->json($agendas);
     }
 }

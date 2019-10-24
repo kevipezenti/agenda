@@ -13,7 +13,7 @@
 
 $router->group(["prefix" => "/agenda"], function () use($router){
 	$router->post("/", "AgendaController@Agendar");
-	$router->put("/{idsala}", "AgendaController@Cancelar");
+	$router->put("/", "AgendaController@Cancelar");
 	$router->get("/{data}", "AgendaController@Listar");
 });
 
