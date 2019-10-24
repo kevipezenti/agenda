@@ -1,7 +1,7 @@
 # agenda
 API REST, em PHP com o framework Lumen
 
-# Rotas da API
+# ROTAS DA API
 
 # HTTP Request
 
@@ -9,7 +9,7 @@ POST agenda/
 PUT agenda/
 GET agenda/{data}
 
-# Rota POST agenda/
+# ROTA POST agenda/
 
     Responsável por inserir os agendamentos, para isso, é necessário informa um objeto JSON
     com os seguintes atributos:
