@@ -3,7 +3,7 @@
 
 use App\Models\Agenda;
 
-class AgendaRepositories implements AgendaInterfaceRepository{
+class AgendaRepository {
 
         private $obj_banco;
 
@@ -22,11 +22,11 @@ class AgendaRepositories implements AgendaInterfaceRepository{
                 ['data_fim','<=',$Requests->json('data_fim')]
             ])->get();
         
-            return count($agendados)!=0;
+            return $agendados;
         }
 
         public function SalvarAgendamento($Requests){
-            return $this->obj_banco->create($Requests->all());
+            return $this->obj_banco->create($Requests);
         }
 
         public function BuscarAgendaCancelar($Requests){
@@ -44,27 +44,25 @@ class AgendaRepositories implements AgendaInterfaceRepository{
 
         public function CancelarAgendamentos($Requests){
 
-            $cancelamentos = $this->obj_banco->query()     
-        ->where([
-            'status'=>1,
-            'id_sala' => $Requests->json('id_sala'),
-            'data_inicio'=>$Requests->json('data_inicio'),
-            'email'=>$Requests->json('email')
-        ])->update(['status'=>0]);
+            $cancelamentos = $this->obj_banco->query()->where([
+                'status'=>1,
+                'id_sala' => $Requests->json('id_sala'),
+                'data_inicio'=>$Requests->json('data_inicio'),
+                'email'=>$Requests->json('email')
+            ])->update(['status'=>0]);
 
-        return $cancelamentos;
+            return $cancelamentos;
 
         }
         
         public function ListarAgendamentos($data){
 
-            $agendados = $this->obj_banco
-        ->where([
-            'status'=>1,
-            ["data_inicio",'like', $data.'%']
-        ])->get();
+            $agendados = $this->obj_banco->where([
+                'status'=>1,
+                ["data_inicio",'like', $data.'%']
+            ])->get();
 
-        return $agendados;
+            return $agendados;
 
         }
     }

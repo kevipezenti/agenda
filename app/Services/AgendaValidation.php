@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class AgendaValidation{
 
-    private $Allfields = [
+    private static $Allfields = [
         'id_sala' => 'required | integer',
         'email'=> 'required | email | max:50',
         'data_inicio'=> 'required | date_format:Y-m-d H:i:s',
@@ -16,45 +15,29 @@ class AgendaValidation{
         'descricao'=> 'required | string',
     ];
 
-    private $DataField = ['data'=> 'required | date_format:Y-m-d'];
-    
+    private static $DataField = ['data'=> 'required | date_format:Y-m-d'];
+ 
+    public static function ValidarAgendamento($request){
 
-    public function ValidarBuscarAgendas($request){
-
-        $fields = [
-            'id_sala'=>$this->Allfields['id_sala'],
-            'data_inicio'=>$this->Allfields['data_inicio'],
-            'data_fim'=>$this->Allfields['data_fim']
-        ];
-
-        return Validator::make($request->all(),$fields);
-
-        // return $validacao->fails() ? 
-        // [$validacao->errors(), Response::HTTP_BAD_REQUEST] : false;
-    }
-
-    public function ValidarAgendamento($request){
-
-        return Validator::make($request->all(), $this->Allfields);
+        return Validator::make($request->all(), self::$Allfields);
 
     }
 
-
-    public function ValidarCancelamento($request){
+    public static function ValidarCancelamento($request){
 
         $fields = [
-            'id_sala'=>$this->Allfields['id_sala'],
-            'data_inicio'=>$this->Allfields['data_inicio'],
-            'email'=>$this->Allfields['email']
+            'id_sala'=>self::$Allfields['id_sala'],
+            'data_inicio'=>self::$Allfields['data_inicio'],
+            'email'=>self::$Allfields['email']
         ];
 
         return Validator::make($request->all(),$fields);
 
     }
 
-    public function ValidarListarAgendamentos($request){
+    public static function ValidarListarAgendamentos($request){
 
-        return Validator::make(['data'=>$request],$this->DataField);
+        return Validator::make(['data'=>$request], self::$DataField);
 
     }
 }

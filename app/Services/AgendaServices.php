@@ -2,67 +2,48 @@
 
 namespace App\Services;
 
-use App\Repositories\AgendaInterfaceRepository;
-use Illuminate\Support\Facades\Response;
+use App\Repositories\AgendaRepository;
+use App\Services\AgendaValidation;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class AgendaServices extends AgendaValidation{
+class AgendaServices {
 
-    private $IntefaceAgenda;
+    private $Obj_agenda;
 
-    public function __construct(AgendaInterfaceRepository $agenda){
-        $this->IntefaceAgenda = $agenda;
-    }
-
-    public function BuscarAgendas($Requests){
-
-        $validacao = $this->ValidarBuscarAgendas($Requests);
-
-        if($validacao->fails()){
-            return response()->json([$validacao->errors(), Response::HTTP_BAD_REQUEST]);
-        }
-
-        return $this->IntefaceAgenda->BuscarAgendas($Requests);
+    public function __construct(AgendaRepository $agenda){
+        $this->Obj_agenda = $agenda;
     }
 
     public function SalvarAgendamento($Requests){
 
-        if($this->BuscarAgendas($Requests)){
+        $validacao = AgendaValidation::ValidarAgendamento($Requests);
+
+        if($validacao->fails()){
+            return response()->json([$validacao->errors(), SymfonyResponse::HTTP_BAD_REQUEST]);
+        }
+
+        $agendas = $this->Obj_agenda->BuscarAgendas($Requests);
+  
+        if(count($agendas)!=0){
             return response()->json([
                 "status"=>"false",
                 "response"=>"Sala agendada para data e horario definido."
                 ]);
         }
 
-        $validacao = $this->ValidarAgendamento($Requests);
+        return $this->Obj_agenda->SalvarAgendamento($Requests->all());
 
-        if($validacao){
-            return response()->json($validacao);
-        }
-
-    //    return $this->obj_banco->create($Requests->all());
-    }
-
-    public function BuscarAgendaCancelar($Requests){
-
-        $validacao = $this->ValidarCancelamento($Requests);
-
-        if($validacao){
-            return response()->json($validacao);
-        }
-
-        // $cancelamentos = $this->obj_banco->query()->where([
-        //     'status'=>1,
-        //     'id_sala' => $Requests->json('id_sala'),
-        //     'data_inicio'=>$Requests->json('data_inicio'),
-        //     'email'=>$Requests->json('email')
-        // ]);
-
-        // return $cancelamentos;
     }
 
     public function CancelarAgendamentos($Requests){
 
-        $cancelar = $this->BuscarAgendaCancelar($Requests);
+        $validacao = AgendaValidation::ValidarCancelamento($Requests);
+
+        if($validacao->fails()){
+            return response()->json([$validacao->errors(), SymfonyResponse::HTTP_BAD_REQUEST]);
+        }
+
+        $cancelar = $this->Obj_agenda->BuscarAgendaCancelar($Requests);
         if(count($cancelar->get())==0){
             return response()->json([
                 "status"=>"false",
@@ -70,34 +51,18 @@ class AgendaServices extends AgendaValidation{
                 ]);
         }
 
-        return ;
-        // $cancelamentos = $this->obj_banco->query()     
-        // ->where([
-        //     'status'=>1,
-        //     'id_sala' => $Requests->json('id_sala'),
-        //     'data_inicio'=>$Requests->json('data_inicio'),
-        //     'email'=>$Requests->json('email')
-        // ])->update(['status'=>0]);
+        return $this->Obj_agenda->CancelarAgendamentos($Requests);
 
-        // return $cancelamentos;
     }
-
 
     public function ListarAgendamentos($data){
 
-        
-        $validacao = $this->ValidarListarAgendamentos($data);
+        $validacao = AgendaValidation::ValidarListarAgendamentos($data);
 
-        if($validacao){
-            return response()->json($validacao);
+        if($validacao->fails()){
+            return response()->json([$validacao->errors(), SymfonyResponse::HTTP_BAD_REQUEST]);
         }
 
-        // $agendados = $this->obj_banco
-        // ->where([
-        //     'status'=>1,
-        //     ["data_inicio",'like', $data.'%']
-        // ])->get();
-
-        // return $agendados;
+        return $this->Obj_agenda->ListarAgendamentos($data);
     }
 }
