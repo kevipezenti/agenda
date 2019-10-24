@@ -2,38 +2,36 @@
 
 namespace App\Services;
 
-use App\Models\Agenda;
-
+use App\Repositories\AgendaInterfaceRepository;
+use Illuminate\Support\Facades\Response;
 
 class AgendaServices extends AgendaValidation{
 
-    private $obj_banco;
+    private $IntefaceAgenda;
 
-    public function __construct(Agenda $agenda){
-        $this->obj_banco = $agenda;
+    public function __construct(AgendaInterfaceRepository $agenda){
+        $this->IntefaceAgenda = $agenda;
     }
 
     public function BuscarAgendas($Requests){
 
         $validacao = $this->ValidarBuscarAgendas($Requests);
 
-        if($validacao){
-            return response()->json($validacao);
+        if($validacao->fails()){
+            return response()->json([$validacao->errors(), Response::HTTP_BAD_REQUEST]);
         }
 
-        $agendados = $this->obj_banco->query()->where([
-                'status'=>1,
-                'id_sala'=>$Requests->json('id_sala'),
-                ['data_inicio','>=',$Requests->json('data_inicio')],
-                ['data_inicio','<=',$Requests->json('data_fim')],
-                ['data_fim','>=',$Requests->json('data_inicio')],
-                ['data_fim','<=',$Requests->json('data_fim')]
-            ])->get();
-        
-        return count($agendados)!=0;
+        return $this->IntefaceAgenda->BuscarAgendas($Requests);
     }
 
     public function SalvarAgendamento($Requests){
+
+        if($this->BuscarAgendas($Requests)){
+            return response()->json([
+                "status"=>"false",
+                "response"=>"Sala agendada para data e horario definido."
+                ]);
+        }
 
         $validacao = $this->ValidarAgendamento($Requests);
 
@@ -41,7 +39,7 @@ class AgendaServices extends AgendaValidation{
             return response()->json($validacao);
         }
 
-       return $this->obj_banco->create($Requests->all());
+    //    return $this->obj_banco->create($Requests->all());
     }
 
     public function BuscarAgendaCancelar($Requests){
@@ -52,24 +50,36 @@ class AgendaServices extends AgendaValidation{
             return response()->json($validacao);
         }
 
-        $cancelamentos = $this->obj_banco->query()->where([
-            'status'=>1,
-            'data_inicio'=>$Requests->json('data_inicio'),
-            'email'=>$Requests->json('email')
-        ])->get();
+        // $cancelamentos = $this->obj_banco->query()->where([
+        //     'status'=>1,
+        //     'id_sala' => $Requests->json('id_sala'),
+        //     'data_inicio'=>$Requests->json('data_inicio'),
+        //     'email'=>$Requests->json('email')
+        // ]);
 
-        return count($cancelamentos)==0;
+        // return $cancelamentos;
     }
 
     public function CancelarAgendamentos($Requests){
-        $cancelamentos = $this->obj_banco->query()     
-        ->where([
-            'status'=>1,
-            'data_inicio'=>$Requests->json('data_inicio'),
-            'email'=>$Requests->json('email')
-        ])->update(['status'=>0]);
 
-        return $cancelamentos;
+        $cancelar = $this->BuscarAgendaCancelar($Requests);
+        if(count($cancelar->get())==0){
+            return response()->json([
+                "status"=>"false",
+                "response"=>"Nao foi encontrado agenda para cancelar."
+                ]);
+        }
+
+        return ;
+        // $cancelamentos = $this->obj_banco->query()     
+        // ->where([
+        //     'status'=>1,
+        //     'id_sala' => $Requests->json('id_sala'),
+        //     'data_inicio'=>$Requests->json('data_inicio'),
+        //     'email'=>$Requests->json('email')
+        // ])->update(['status'=>0]);
+
+        // return $cancelamentos;
     }
 
 
@@ -82,12 +92,12 @@ class AgendaServices extends AgendaValidation{
             return response()->json($validacao);
         }
 
-        $agendados = $this->obj_banco
-        ->where([
-            'status'=>1,
-            ["data_inicio",'like', $data.'%']
-        ])->get();
+        // $agendados = $this->obj_banco
+        // ->where([
+        //     'status'=>1,
+        //     ["data_inicio",'like', $data.'%']
+        // ])->get();
 
-        return $agendados;
+        // return $agendados;
     }
 }

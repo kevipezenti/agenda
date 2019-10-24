@@ -27,19 +27,16 @@ class AgendaValidation{
             'data_fim'=>$this->Allfields['data_fim']
         ];
 
-        $validacao = Validator::make($request->all(),$fields);
+        return Validator::make($request->all(),$fields);
 
-        return $validacao->fails() ? 
-        [$validacao->errors(), Response::HTTP_BAD_REQUEST] : false;
+        // return $validacao->fails() ? 
+        // [$validacao->errors(), Response::HTTP_BAD_REQUEST] : false;
     }
 
     public function ValidarAgendamento($request){
 
-        $validacao = Validator::make($request->all(),
-        $this->Allfields);
+        return Validator::make($request->all(), $this->Allfields);
 
-        return $validacao->fails() ? 
-        [$validacao->errors(), Response::HTTP_BAD_REQUEST] : false;
     }
 
 
@@ -51,17 +48,13 @@ class AgendaValidation{
             'email'=>$this->Allfields['email']
         ];
 
-        $validacao = Validator::make($request->all(),$fields);
+        return Validator::make($request->all(),$fields);
 
-        return $validacao->fails() ? 
-        [$validacao->errors(), Response::HTTP_BAD_REQUEST] : false;
     }
 
     public function ValidarListarAgendamentos($request){
 
-        $validacao = Validator::make(['data'=>$request],$this->DataField);
+        return Validator::make(['data'=>$request],$this->DataField);
 
-        return $validacao->fails() ? 
-        [$validacao->errors(), Response::HTTP_BAD_REQUEST] : false;
     }
 }
