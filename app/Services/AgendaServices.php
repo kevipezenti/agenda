@@ -27,7 +27,7 @@ class AgendaServices {
         if(count($agendas)!=0){
             return response()->json([
                 "status"=>"false",
-                "response"=>"Sala agendada para data e horario definido."
+                "response"=>"Sala não disponível para data e horário definido."
                 ]);
         }
 
