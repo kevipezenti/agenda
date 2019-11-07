@@ -1,63 +1,63 @@
 <?php
     namespace App\Repositories;
 
-use App\Models\Agenda;
+use App\Models\agenda;
 
-class AgendaRepository {
+class agendaRepository {
 
-        private $obj_banco;
+        private $objBanco;
 
-        public function __construct(Agenda $agenda){
-            $this->obj_banco = $agenda;
+        public function __construct(agenda $agenda){
+            $this->objBanco = $agenda;
         }
 
-        public function BuscarAgendas($Requests){
+        public function buscarAgendas($requests){
 
-            $agendados = $this->obj_banco->query()->where([
+            $agendados = $this->objBanco->query()->where([
                 'status'=>1,
-                'id_sala'=>$Requests->json('id_sala'),
-                ['data_inicio','>=',$Requests->json('data_inicio')],
-                ['data_inicio','<=',$Requests->json('data_fim')],
-                ['data_fim','>=',$Requests->json('data_inicio')],
-                ['data_fim','<=',$Requests->json('data_fim')]
+                'id_sala'=>$requests->json('id_sala'),
+                ['data_inicio','>=',$requests->json('data_inicio')],
+                ['data_inicio','<=',$requests->json('data_fim')],
+                ['data_fim','>=',$requests->json('data_inicio')],
+                ['data_fim','<=',$requests->json('data_fim')]
             ])->get();
         
             return $agendados;
         }
 
-        public function SalvarAgendamento($Requests){
-            return $this->obj_banco->create($Requests);
+        public function salvarAgendamento($requests){
+            return $this->objBanco->create($requests);
         }
 
-        public function BuscarAgendaCancelar($Requests){
+        public function buscarAgendaCancelar($requests){
 
-            $cancelamentos = $this->obj_banco->query()->where([
+            $cancelamentos = $this->objBanco->query()->where([
                 'status'=>1,
-                'id_sala' => $Requests->json('id_sala'),
-                'data_inicio'=>$Requests->json('data_inicio'),
-                'email'=>$Requests->json('email')
+                'id_sala' => $requests->json('id_sala'),
+                'data_inicio'=>$requests->json('data_inicio'),
+                'email'=>$requests->json('email')
             ]);
     
             return $cancelamentos;
 
         }
 
-        public function CancelarAgendamentos($Requests){
+        public function cancelarAgendamentos($requests){
 
-            $cancelamentos = $this->obj_banco->query()->where([
+            $cancelamentos = $this->objBanco->query()->where([
                 'status'=>1,
-                'id_sala' => $Requests->json('id_sala'),
-                'data_inicio'=>$Requests->json('data_inicio'),
-                'email'=>$Requests->json('email')
+                'id_sala' => $requests->json('id_sala'),
+                'data_inicio'=>$requests->json('data_inicio'),
+                'email'=>$requests->json('email')
             ])->update(['status'=>0]);
 
             return $cancelamentos;
 
         }
         
-        public function ListarAgendamentos($data){
+        public function listarAgendamentos($data){
 
-            $agendados = $this->obj_banco->where([
+            $agendados = $this->objBanco->where([
                 'status'=>1,
                 ["data_inicio",'like', $data.'%']
             ])->get();

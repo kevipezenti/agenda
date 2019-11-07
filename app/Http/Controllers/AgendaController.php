@@ -3,37 +3,43 @@
 namespace App\Http\Controllers;
 
 use Illuminate\http\Request;
-use App\Services\AgendaServices;
+use App\Services\agendaServices;
 
-class AgendaController extends Controller
+class agendaController extends Controller
 {
     
-    private $ObjServices;
+    private $objServices;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(AgendaServices $service){
+    public function __construct(agendaServices $service){
         
-        $this->ObjServices = $service;
+        $this->objServices = $service;
     }
 
-    public function Agendar(Request $request){
+   /**
+    * Undocumented function
+    *
+    * @param request $request
+    * @return void
+    */
+    public function agendar(Request $request){
 
-        return $this->ObjServices->SalvarAgendamento($request);
+        return $this->objServices->salvarAgendamento($request);
 
     }
 
-    public function Cancelar(Request $request){
+    public function cancelar(Request $request){
 
-        return $this->ObjServices->CancelarAgendamentos($request);
+        return $this->objServices->cancelarAgendamentos($request);
 
     }
 
-    public function Listar($data){
+    public function listar($data){
         
-        return $this->ObjServices->ListarAgendamentos($data);
+        return $this->objServices->listarAgendamentos($data);
 
     }
 }

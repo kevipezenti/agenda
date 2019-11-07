@@ -12,9 +12,9 @@
 */
 
 $router->group(["prefix" => "/agenda"], function () use($router){
-	$router->post("/", "AgendaController@Agendar");
-	$router->put("/", "AgendaController@Cancelar");
-	$router->get("/{data}", "AgendaController@Listar");
+	$router->post("/", "agendaController@agendar");
+	$router->put("/", "agendaController@cancelar");
+	$router->get("/{data}", "agendaController@listar");
 });
 
 /*$router->get('/', function () use ($router) {

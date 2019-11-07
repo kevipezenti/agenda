@@ -2,27 +2,27 @@
 
 namespace App\Services;
 
-use App\Repositories\AgendaRepository;
-use App\Services\AgendaValidation;
+use App\Repositories\agendaRepository;
+use App\Services\agendaValidation;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class AgendaServices {
+class agendaServices {
 
-    private $Obj_agenda;
+    private $objAgenda;
 
-    public function __construct(AgendaRepository $agenda){
-        $this->Obj_agenda = $agenda;
+    public function __construct(agendaRepository $agenda){
+        $this->objAgenda = $agenda;
     }
 
-    public function SalvarAgendamento($Requests){
+    public function salvarAgendamento($requests){
 
-        $validacao = AgendaValidation::ValidarAgendamento($Requests);
+        $validacao = agendaValidation::validarAgendamento($requests);
 
         if($validacao->fails()){
             return response()->json([$validacao->errors(), SymfonyResponse::HTTP_BAD_REQUEST]);
         }
 
-        $agendas = $this->Obj_agenda->BuscarAgendas($Requests);
+        $agendas = $this->objAgenda->buscarAgendas($requests);
   
         if(count($agendas)!=0){
             return response()->json([
@@ -31,19 +31,19 @@ class AgendaServices {
                 ]);
         }
 
-        return $this->Obj_agenda->SalvarAgendamento($Requests->all());
+        return $this->objAgenda->salvarAgendamento($requests->all());
 
     }
 
-    public function CancelarAgendamentos($Requests){
+    public function cancelarAgendamentos($requests){
 
-        $validacao = AgendaValidation::ValidarCancelamento($Requests);
+        $validacao = agendaValidation::validarCancelamento($requests);
 
         if($validacao->fails()){
             return response()->json([$validacao->errors(), SymfonyResponse::HTTP_BAD_REQUEST]);
         }
 
-        $cancelar = $this->Obj_agenda->BuscarAgendaCancelar($Requests);
+        $cancelar = $this->objAgenda->buscarAgendaCancelar($requests);
         if(count($cancelar->get())==0){
             return response()->json([
                 "status"=>"false",
@@ -51,18 +51,18 @@ class AgendaServices {
                 ]);
         }
 
-        return $this->Obj_agenda->CancelarAgendamentos($Requests);
+        return $this->objAgenda->cancelarAgendamentos($requests);
 
     }
 
-    public function ListarAgendamentos($data){
+    public function listarAgendamentos($data){
 
-        $validacao = AgendaValidation::ValidarListarAgendamentos($data);
+        $validacao = agendaValidation::validarListarAgendamentos($data);
 
         if($validacao->fails()){
             return response()->json([$validacao->errors(), SymfonyResponse::HTTP_BAD_REQUEST]);
         }
 
-        return $this->Obj_agenda->ListarAgendamentos($data);
+        return $this->objAgenda->listarAgendamentos($data);
     }
 }

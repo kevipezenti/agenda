@@ -4,9 +4,9 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Validator;
 
-class AgendaValidation{
+class agendaValidation{
 
-    private static $Allfields = [
+    private static $allfields = [
         'id_sala' => 'required | integer',
         'email'=> 'required | email | max:50',
         'data_inicio'=> 'required | date_format:Y-m-d H:i:s',
@@ -15,29 +15,29 @@ class AgendaValidation{
         'descricao'=> 'required | string',
     ];
 
-    private static $DataField = ['data'=> 'required | date_format:Y-m-d'];
+    private static $dataField = ['data'=> 'required | date_format:Y-m-d'];
  
-    public static function ValidarAgendamento($request){
+    public static function validarAgendamento($request){
 
-        return Validator::make($request->all(), self::$Allfields);
+        return Validator::make($request->all(), self::$allfields);
 
     }
 
-    public static function ValidarCancelamento($request){
+    public static function validarCancelamento($request){
 
         $fields = [
-            'id_sala'=>self::$Allfields['id_sala'],
-            'data_inicio'=>self::$Allfields['data_inicio'],
-            'email'=>self::$Allfields['email']
+            'id_sala'=>self::$allfields['id_sala'],
+            'data_inicio'=>self::$allfields['data_inicio'],
+            'email'=>self::$allfields['email']
         ];
 
         return Validator::make($request->all(),$fields);
 
     }
 
-    public static function ValidarListarAgendamentos($request){
+    public static function validarListarAgendamentos($request){
 
-        return Validator::make(['data'=>$request], self::$DataField);
+        return Validator::make(['data'=>$request], self::$dataField);
 
     }
 }
